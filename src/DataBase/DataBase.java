@@ -1,9 +1,11 @@
 package DataBase;
 
+import Entitys.Consumivel;
 import Entitys.Habilidade;
 import Entitys.Historia.Capitulo;
 import Entitys.Historia.Frase;
 import Entitys.Historia.Historia;
+import Entitys.Item;
 import Entitys.Personagem;
 
 import java.util.ArrayList;
@@ -283,49 +285,47 @@ public class DataBase {
         return historia;
     }
 
-}
-
-//Arma do Cavaleiro
-    public Item espada0 = new Item("Espada de Ferro Enferrujada", 0, 10, 0, 0, 0, 5);
-    public Item espada1 = new Item("Lâmina de Batalha", 0, 12, 0, 0, 1, 10);
-    public Item espada2 = new Item("Fatiadora de Recompensas", 0, 16, 0, 0, 2, 15);
-    public Item espada3 = new Item("Estilhaço de Estrela", 0, 18, 0, 0, 3, 20);
-    public Item espada4 = new Item("Whisper of the Shadows", 0, 22, 0, 0, 4, 25);
+    //Arma do Cavaleiro
+    public Item espada0 = new Item("Espada de Ferro Enferrujada", 0, 10, 0, 0, 0, 5,10);
+    public Item espada1 = new Item("Lâmina de Batalha", 0, 12, 0, 0, 1, 10,10);
+    public Item espada2 = new Item("Fatiadora de Recompensas", 0, 16, 0, 0, 2, 15,10);
+    public Item espada3 = new Item("Estilhaço de Estrela", 0, 18, 0, 0, 3, 20,10);
+    public Item espada4 = new Item("Whisper of the Shadows", 0, 22, 0, 0, 4, 25,10);
 
     //Armadura Cavaleiro
-    public Item armaduraCavaleiro0 = new Item("Traje de Couro Gasto", 5, 0, 3, 0, 0, 0);
-    public Item armaduraCavaleiro1 = new Item("Loriga do Defensor", 8, 0, 6, 2, 1, 0);
-    public Item armaduraCavaleiro2 = new Item("Peitoral do Colosso", 15, 0, 8, 7, 2, 0);
-    public Item armaduraCavaleiro3 = new Item("Escamas de Obsidiana", 19, 0, 11, 7, 3, 0);
-    public Item armaduraCavaleiro4 = new Item("Armor of the Fallen Angel", 25, 0, 15, 10, 4, 0);
+    public Item armaduraCavaleiro0 = new Item("Traje de Couro Gasto", 5, 0, 3, 0, 0, 0,10);
+    public Item armaduraCavaleiro1 = new Item("Loriga do Defensor", 8, 0, 6, 2, 1, 0,10);
+    public Item armaduraCavaleiro2 = new Item("Peitoral do Colosso", 15, 0, 8, 7, 2, 0,10);
+    public Item armaduraCavaleiro3 = new Item("Escamas de Obsidiana", 19, 0, 11, 7, 3, 0,10);
+    public Item armaduraCavaleiro4 = new Item("Armor of the Fallen Angel", 25, 0, 15, 10, 4, 0,10);
 
     //Arma do Arqueiro
-    public Item arco0 = new Item("Arco abandonado", 0, 10, 0, 0, 0, 5);
-    public Item arco1 = new Item("Besta Leve", 0, 14, 0, 0, 1, 10);
-    public Item arco2 = new Item("Arco do Espreitador Silvestre", 0, 18, 0, 0, 2, 20);
-    public Item arco3 = new Item("Sopro cintilante", 0, 23, 0, 0, 3, 30);
-    public Item arco4 = new Item("Dragonbone bow", 0, 23, 0, 0, 4, 50);
+    public Item arco0 = new Item("Arco abandonado", 0, 10, 0, 0, 0, 5,1);
+    public Item arco1 = new Item("Besta Leve", 0, 14, 0, 0, 1, 10,1);
+    public Item arco2 = new Item("Arco do Espreitador Silvestre", 0, 18, 0, 0, 2, 20,1);
+    public Item arco3 = new Item("Sopro cintilante", 0, 23, 0, 0, 3, 30,1);
+    public Item arco4 = new Item("Dragonbone bow", 0, 23, 0, 0, 4, 50,1);
 
     //Armadura Arqueiro
-    public Item armaduraArqueiro0 = new Item("Armadura Leve", 2, 0, 2, 0, 0, 0);
-    public Item armaduraArqueiro1 = new Item("Armadura de Malha de Ferro", 4, 0, 4, 0, 1, 0);
-    public Item armaduraArqueiro2 = new Item("Armadura Lamelar do Batedor", 6, 0, 6, 0, 2, 0);
-    public Item armaduraArqueiro3 = new Item("Peitoral do Olho de Águia", 8, 0, 8, 0, 3, 0);
-    public Item armaduraArqueiro4 = new Item("Shadows of The Immortal Predator", 8, 0, 8, 0, 3, 0);
+    public Item armaduraArqueiro0 = new Item("Armadura Leve", 2, 0, 2, 0, 0, 0,1);
+    public Item armaduraArqueiro1 = new Item("Armadura de Malha de Ferro", 4, 0, 4, 0, 1, 0,1);
+    public Item armaduraArqueiro2 = new Item("Armadura Lamelar do Batedor", 6, 0, 6, 0, 2, 0,1);
+    public Item armaduraArqueiro3 = new Item("Peitoral do Olho de Águia", 8, 0, 8, 0, 3, 0,1);
+    public Item armaduraArqueiro4 = new Item("Shadows of The Immortal Predator", 8, 0, 8, 0, 3, 0,1);
 
     //Cajado do Mago
-    public Item cajadoMago0 = new Item("Cajado do Aprendiz", 0, 10, 0, 0, 0, 5);
-    public Item cajadoMago1 = new Item("Cajado do Escavador", 0, 15, 0, 0, 1, 10);
-    public Item cajadoMago2 = new Item("Cajado de Cristal", 0, 20, 0, 0, 2, 20);
-    public Item cajadoMago3 = new Item("Cajado de Lâmina Brilhante", 0, 25, 0, 0, 3, 30);
-    public Item cajadoMago4 = new Item("Prince of Death's Staff", 0, 30, 0, 0, 4, 50);
+    public Item cajadoMago0 = new Item("Cajado do Aprendiz", 0, 10, 0, 0, 0, 5,1);
+    public Item cajadoMago1 = new Item("Cajado do Escavador", 0, 15, 0, 0, 1, 10,1);
+    public Item cajadoMago2 = new Item("Cajado de Cristal", 0, 20, 0, 0, 2, 20,1);
+    public Item cajadoMago3 = new Item("Cajado de Lâmina Brilhante", 0, 25, 0, 0, 3, 30,1);
+    public Item cajadoMago4 = new Item("Prince of Death's Staff", 0, 30, 0, 0, 4, 50,1);
 
     //Mantos do Mago
-    public Item mantoMago0 = new Item("Manto de Lã de cordeiro", 0, 0, 0, 2, 0, 0);
-    public Item mantoMago1 = new Item("Manto do Círculo Interno", 3, 0, 1, 4, 1, 0);
-    public Item mantoMago2 = new Item("Manto da Chama Eterna", 5, 0, 3, 6, 2, 0);
-    public Item mantoMago3 = new Item("Capa do Sábio Emérito", 7, 0, 5, 7, 3, 0);
-    public Item mantoMago4 = new Item("Cloak of the Starry Void", 10, 0, 8, 10, 4, 0);
+    public Item mantoMago0 = new Item("Manto de Lã de cordeiro", 0, 0, 0, 2, 0, 0,1);
+    public Item mantoMago1 = new Item("Manto do Círculo Interno", 3, 0, 1, 4, 1, 0,1);
+    public Item mantoMago2 = new Item("Manto da Chama Eterna", 5, 0, 3, 6, 2, 0,1);
+    public Item mantoMago3 = new Item("Capa do Sábio Emérito", 7, 0, 5, 7, 3, 0,1);
+    public Item mantoMago4 = new Item("Cloak of the Starry Void", 10, 0, 8, 10, 4, 0,1);
 
     //Poções
     public Consumivel pocaoDeCura1 = new Consumivel("Poção de Cura(Leve)", 10, 0, 5);
@@ -335,5 +335,6 @@ public class DataBase {
     public Consumivel pocaoDeMana1 = new Consumivel("Poção de Mana(Leve)", 0, 10, 5);
     public Consumivel pocaoDeMana2 = new Consumivel("Poção de Mana(Intermediário)", 0, 20, 10);
     public Consumivel pocaoDeMana3 = new Consumivel("Poção de Mana(Avançada)", 0, 30, 15);
-
 }
+
+
