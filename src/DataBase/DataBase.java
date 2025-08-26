@@ -1,11 +1,9 @@
 package DataBase;
 
-import Entitys.Consumivel;
 import Entitys.Habilidade;
 import Entitys.Historia.Capitulo;
 import Entitys.Historia.Frase;
 import Entitys.Historia.Historia;
-import Entitys.Item;
 import Entitys.Personagem;
 
 import java.util.ArrayList;
@@ -285,7 +283,9 @@ public class DataBase {
         return historia;
     }
 
-    //Arma do Cavaleiro
+}
+
+//Arma do Cavaleiro
     public Item espada0 = new Item("Espada de Ferro Enferrujada", 0, 10, 0, 0, 0, 5);
     public Item espada1 = new Item("Lâmina de Batalha", 0, 12, 0, 0, 1, 10);
     public Item espada2 = new Item("Fatiadora de Recompensas", 0, 16, 0, 0, 2, 15);
