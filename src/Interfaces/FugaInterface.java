@@ -1,6 +1,10 @@
 package Interfaces;
 
+import Entitys.Personagem;
+
+import java.util.List;
+
 public interface FugaInterface {
 
-    public void fugir();
+    public boolean fugir(List<Personagem> inimigos);
 }

@@ -1,9 +1,9 @@
 package Interfaces;
 
+import Entitys.Item;
+
 public interface ItemInterface {
 
-    public void comprar();
-
-    public void usarItem();
+    public boolean comprar(Item item);
 
 }
