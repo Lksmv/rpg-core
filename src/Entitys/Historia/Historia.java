@@ -9,8 +9,13 @@ public class Historia {
         this.inicio = inicio;
     }
 
-    public void iniciarHistoria() {
-        inicio.narrar();
+    public Capitulo getInicio() {
+        return inicio;
     }
+
+    public void setInicio(Capitulo inicio) {
+        this.inicio = inicio;
+    }
+
 
 }

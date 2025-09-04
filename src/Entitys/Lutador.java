@@ -9,8 +9,8 @@ import java.util.Random;
 
 public class Lutador extends Personagem implements FugaInterface, HabilidadeInterface {
 
-    public Lutador(String nome, int pontosVida, int forca, int defesa, int defesaMagica, int nivel, int experiencia, int chanceCritico) {
-        super(nome, pontosVida, forca, defesa, defesaMagica, nivel, experiencia, chanceCritico);
+    public Lutador(String nome) {
+        super(nome, 100, 10, 10, 20, 1, 0, 0);
         super.addHabilidade(new Habilidade("Corte rapido", "Corta o inimigo rapidamente", 0, 12, false));
         super.addItem(new Item("Espada simples", 0, 9, 0, 0, 0, 5, 100));
     }
