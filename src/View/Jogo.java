@@ -1,125 +1,191 @@
 package View;
 
 import DataBase.DataBase;
+import Entitys.Historia.Capitulo;
 import Entitys.Historia.Frase;
 import Entitys.Historia.Historia;
+import Entitys.Personagem;
+import View.Component.AudioPlayer;
+import View.Component.RoundedBorder;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Scanner;
 
 public class Jogo {
-    JPanel painelJogo = new JPanel();
+    private JPanel painelJogo;
+    private JTextArea areaTexto;
     private MainView mainView;
+
+    private JPanel painelRodape;
+    private JPanel painelBotoesCombate; // botoes de combate
+    private JPanel painelEscolhas;
 
     public Jogo(MainView mainView) {
         this.mainView = mainView;
-        criarPainelJogo();
 
-        JPanel painelRodape = new JPanel(new BorderLayout());
-        painelRodape.setOpaque(false);
-
-        botoesCombate(painelRodape);
-    }
-
-    public JPanel criarPainelJogo() {
-        painelJogo.setLayout(new BorderLayout());
+        painelJogo = new JPanel(new BorderLayout());
         painelJogo.setBackground(Color.BLACK);
-        JLabel labelNome = new JLabel("Digite o nome do seu personagem:");
-        painelJogo.add(labelNome);
-        return painelJogo;
+        painelJogo.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        areaTexto = new JTextArea();
+        areaTexto.setEditable(false);
+        areaTexto.setLineWrap(true);
+        areaTexto.setWrapStyleWord(true);
+        areaTexto.setFont(new Font("Consolas", Font.PLAIN, 18));
+        areaTexto.setBackground(new Color(18, 18, 18));
+        areaTexto.setForeground(Color.WHITE);
+        areaTexto.setMargin(new Insets(15, 20, 15, 20));
+        areaTexto.setBorder(new RoundedBorder(15));
+        areaTexto.setCaretColor(Color.WHITE);
+
+        JScrollPane scroll = new JScrollPane(areaTexto);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
+        painelJogo.add(scroll, BorderLayout.CENTER);
+
+        painelRodape = new JPanel(new BorderLayout());
+        painelRodape.setOpaque(false);
+        painelJogo.add(painelRodape, BorderLayout.SOUTH);
+        criarBotoesCombate();
     }
 
-    public void configurarBotaoBaixo(JButton botao) {
-        botao.setPreferredSize(new Dimension(120, 40));
-        botao.setBorder(null);
-        botao.setFocusPainted(false);
-        botao.setBackground(new Color(50, 50, 50));
-        botao.setForeground(Color.WHITE);
-        botao.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    private void mostrarBotoesCombate() {
+        if (painelBotoesCombate != null) {
+            painelBotoesCombate.setVisible(true);
+        }
     }
 
-    public void botoesCombate(JPanel painelRodape) {
-        JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
-        painelBotoes.setBackground(Color.BLACK);
-
-        JButton botaoAtacar = new JButton("Atacar");
-        configurarBotaoBaixo(botaoAtacar);
-
-        JButton botaoUsarHabilidade = new JButton("Usar Habilidade");
-        configurarBotaoBaixo(botaoUsarHabilidade);
-
-        JButton botaoDefender = new JButton("Defender");
-        configurarBotaoBaixo(botaoDefender);
-
-        JButton botaoFugir = new JButton("Fugir");
-        configurarBotaoBaixo(botaoFugir);
-
-        painelBotoes.add(botaoAtacar);
-        painelBotoes.add(botaoUsarHabilidade);
-        painelBotoes.add(botaoDefender);
-        painelBotoes.add(botaoFugir);
-
-        painelRodape.add(painelBotoes, BorderLayout.CENTER);
+    private void esconderBotoesCombate() {
+        if (painelBotoesCombate != null) {
+            painelBotoesCombate.setVisible(false);
+            painelRodape.revalidate();
+            painelRodape.repaint();
+        }
     }
 
+    private void criarBotoesCombate() {
+        if (painelBotoesCombate == null) {
+            painelBotoesCombate = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
+            painelBotoesCombate.setBackground(Color.BLACK);
+
+
+            JButton botaoHabilidade = new JButton("Usar Habilidade");
+            mainView.configurarBotao(botaoHabilidade);
+
+            JButton botaoItem = new JButton("Usar Item");
+            mainView.configurarBotao(botaoItem);
+
+            JButton botaoFugir = new JButton("Fugir");
+            mainView.configurarBotao(botaoFugir);
+
+            painelBotoesCombate.add(botaoHabilidade);
+            painelBotoesCombate.add(botaoItem);
+            painelBotoesCombate.add(botaoFugir);
+
+            painelRodape.add(painelBotoesCombate, BorderLayout.CENTER);
+        }
+
+        painelBotoesCombate.setVisible(false);
+        painelRodape.revalidate();
+        painelRodape.repaint();
+    }
 
     public JPanel getPainelJogo() {
         return painelJogo;
     }
 
-//    public void narrar() {
-//
-//        DataBase db = new DataBase();
-//        Historia h = db.getHistoria();
-//        //                                         FORMATO: CONTEXTO INICIAL > COMBATE > NARRATIVA FINAL
-//        //                                         DA P MUDAR PARA CONTEXTO INICIAL > COMBATE
-//        //                                         ISSO É APENAS 1 TURNO, PEQUENA PARTE DE TODA A HISTORIA.
-//        try {
-//
-//            for (Frase frase : h.getInicio().getPeriodoInicial()) {
-//                System.out.println(frase.getConteudo());
-//                Thread.sleep(frase.getIntervalo() * 1000);
-//            }
-//
-//            //PARTE DE COMBATE - A FAZER
-//
-//            //PARTE FINAL
-//
-//            for (Frase frase : periodoFinal) {
-//                System.out.println(frase.getConteudo());
-//                Thread.sleep(frase.getIntervalo() * 1000);
-//            }
-//
-//            if (proximosCapitulos.isEmpty()) {
-//                System.out.println("--------------------");
-//            } else if (proximosCapitulos.size() == 1) {
-//                proximosCapitulos.get(0).narrar();
-//            } else {
-//                Scanner scan = new Scanner(System.in);
-//                while (true) {
-//                    System.out.println("Escolha para qual lugar voce deseja ir:");
-//                    for (int i = 1; i <= proximosCapitulos.size(); i++) {
-//                        System.out.println(i + " - " + proximosCapitulos.get(i - 1).getTitulo());
-//                    }
-//                    try {
-//                        int opcao = scan.nextInt();
-//                        if (proximosCapitulos.get(opcao - 1) == null) {
-//                            throw new InputMismatchException();
-//                        } else {
-//                            proximosCapitulos.get(opcao - 1).narrar();
-//                        }
-//                    } catch (InputMismatchException e) {
-//                        System.out.println("Opcao invalida!");
-//                    }
-//                }
-//            }
-//
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public void narrar(Personagem personagem) {
+        DataBase db = new DataBase();
+        Historia historia = db.getHistoria();
+        new AudioPlayer().tocarAudio("/resources/ambientSound.wav",-50.0f);
+
+        narrarCapitulo(historia.getInicio(), personagem);
+    }
+
+    private void narrarCapitulo(Capitulo capitulo, Personagem personagem) {
+        areaTexto.setText("");
+
+        SwingWorker<Void, String> narrador = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                // Parte inicial
+                for (Frase frase : capitulo.getPeriodoInicial()) {
+                    publish(frase.getConteudo());
+                    Thread.sleep(frase.getIntervalo() * 1000L);
+                }
+
+                // Combate
+                publish(" Um combate começa!");
+                executarCombate(personagem);
+                esconderBotoesCombate();
+
+                // Parte final
+                for (Frase frase : capitulo.getPeriodoFinal()) {
+                    publish(frase.getConteudo());
+                    Thread.sleep(frase.getIntervalo() * 1000L);
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void process(List<String> frases) {
+                for (String f : frases) {
+                    areaTexto.append(f + "\n");
+                }
+                areaTexto.setCaretPosition(areaTexto.getDocument().getLength());
+            }
+
+            @Override
+            protected void done() {
+                mostrarEscolhas(capitulo.getProximosCapitulos(), personagem);
+            }
+        };
+
+        narrador.execute();
+    }
+
+    private void executarCombate(Personagem personagem) {
+        mostrarBotoesCombate();
+        SwingUtilities.invokeLater(() -> {
+            areaTexto.append("Você enfrenta um monstro terrível!\n");
+        });
+    }
+
+    private void mostrarEscolhas(List<Capitulo> proximos, Personagem personagem) {
+        if (proximos == null || proximos.isEmpty()) {
+            areaTexto.append("Fim da jornada...\n");
+            return;
+        }
+
+        if (painelEscolhas != null) {
+            painelJogo.remove(painelEscolhas);
+        }
+
+        painelEscolhas = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 20));
+        painelEscolhas.setBackground(Color.BLACK);
+        painelEscolhas.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        for (Capitulo cap : proximos) {
+            JButton btn = new JButton(cap.getTitulo());
+            mainView.configurarBotao(btn);
+
+            btn.addActionListener(e -> {
+                painelJogo.remove(painelEscolhas);
+                painelJogo.revalidate();
+                painelJogo.repaint();
+                narrarCapitulo(cap, personagem);
+            });
+
+            painelEscolhas.add(btn);
+        }
+
+        painelJogo.add(painelEscolhas, BorderLayout.NORTH);
+        painelJogo.revalidate();
+        painelJogo.repaint();
+    }
+
+
 
 }

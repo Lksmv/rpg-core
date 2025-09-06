@@ -19,7 +19,7 @@ public class Menu{
         gbc.insets = new Insets(10, 0, 10, 0);
 
         JLabel titulo = new JLabel("<html><font color='white'>Legends of Zelda</font></html>");
-        titulo.setFont(new Font("Arial", Font.BOLD, 48));
+        titulo.setFont(new Font("Consolas", Font.BOLD, 48));
         gbc.gridy = 0;
         painelFundo.add(titulo, gbc);
 
@@ -33,7 +33,7 @@ public class Menu{
         mainView.configurarBotao(botaoSair);
         painelFundo.add(botaoSair, gbc);
 
-        botaoJogar.addActionListener(e -> mainView.mostrarPainel("selecao"));
+        botaoJogar.addActionListener(e -> mainView.mostrarPainel("nome"));
         botaoSair.addActionListener(e -> System.exit(0));
 
         return painelFundo;
