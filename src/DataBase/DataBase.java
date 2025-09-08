@@ -5,6 +5,7 @@ import Entitys.Historia.Capitulo;
 import Entitys.Historia.Frase;
 import Entitys.Historia.Historia;
 import Entitys.Item;
+import Entitys.Habilidade;
 
 import java.util.ArrayList;
 import java.util.Arrays;

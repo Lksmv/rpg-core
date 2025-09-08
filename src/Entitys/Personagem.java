@@ -32,6 +32,7 @@ public class Personagem implements ItemInterface {
         this.chanceCritico = chanceCritico;
         this.inventario = new ArrayList<>();
         this.habilidades = new ArrayList<>();
+        this.consumiveis = new ArrayList<>(); // Adicione esta linha
         this.moedas = 25;
     }
 
@@ -170,4 +171,25 @@ public class Personagem implements ItemInterface {
         }
     }
 
+    public boolean usarHabilidade(Habilidade habilidade, Personagem personagem) {
+        int critico = validarCritico() ? 2 : 1;
+        if (critico == 2) {
+            System.out.println("Crítico! A habilidade causa o dobro de dano!");
+        }
+
+        int danoFinal;
+        if (habilidade.isDanoMagico()) {
+            danoFinal = (habilidade.getDano() * critico) - personagem.getDefesaMagica();
+        } else {
+            danoFinal = (habilidade.getDano() * critico) - personagem.getDefesa();
+        }
+
+        // Garante que o dano não seja negativo (não cure o inimigo)
+        if (danoFinal < 0) {
+            danoFinal = 0;
+        }
+
+        personagem.setPontosVida(personagem.getPontosVida() - danoFinal);
+        return true;
+    }
 }
