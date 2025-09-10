@@ -333,5 +333,3 @@ public class DataBase {
     public Consumivel pocaoDeMana2 = new Consumivel("Poção de Mana(Intermediário)", 0, 20, 10);
     public Consumivel pocaoDeMana3 = new Consumivel("Poção de Mana(Avançada)", 0, 30, 15);
 }
-
-
