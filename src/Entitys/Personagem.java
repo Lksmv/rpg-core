@@ -9,6 +9,7 @@ public class Personagem implements ItemInterface {
 
     private String nome;
     private int pontosVida;
+    private int vidaMaxima;
     private int forca;
     private int defesa;
     private int defesaMagica;
@@ -16,14 +17,19 @@ public class Personagem implements ItemInterface {
     private int experiencia;
     private int chanceCritico;
     private int moedas;
+    private int mana;
+    private int manaMaxima;
+    private int qntPocaoVida;
+    private int qntPocaoMana;
+
     private ArrayList<Item> inventario;
-    private ArrayList<Consumivel> consumiveis;
     private ArrayList<Habilidade> habilidades;
 
 
-    public Personagem(String nome, int pontosVida, int forca, int defesa, int defesaMagica, int nivel, int experiencia, int chanceCritico) {
+    public Personagem(String nome, int pontosVida, int forca, int defesa, int defesaMagica, int nivel, int experiencia, int chanceCritico,int mana) {
         this.nome = nome;
         this.pontosVida = pontosVida;
+        this.vidaMaxima = pontosVida;
         this.forca = forca;
         this.defesa = defesa;
         this.defesaMagica = defesaMagica;
@@ -32,8 +38,27 @@ public class Personagem implements ItemInterface {
         this.chanceCritico = chanceCritico;
         this.inventario = new ArrayList<>();
         this.habilidades = new ArrayList<>();
-        this.consumiveis = new ArrayList<>(); // Adicione esta linha
+        this.mana = mana;
+        this.manaMaxima = mana;
         this.moedas = 25;
+        this.qntPocaoVida = 5;
+        this.qntPocaoMana = 5;
+    }
+
+    public int getQntPocaoMana() {
+        return qntPocaoMana;
+    }
+
+    public void setQntPocaoMana(int qntPocaoMana) {
+        this.qntPocaoMana = qntPocaoMana;
+    }
+
+    public int getQntPocaoVida() {
+        return qntPocaoVida;
+    }
+
+    public void setQntPocaoVida(int qntPocaoVida) {
+        this.qntPocaoVida = qntPocaoVida;
     }
 
     public int getMoedas() {
@@ -108,22 +133,12 @@ public class Personagem implements ItemInterface {
         return inventario;
     }
 
-
-    public ArrayList<Consumivel> getConsumiveis() {
-        return consumiveis;
+    public int getMana() {
+        return mana;
     }
 
-    public void addConsumivel(Consumivel consumivel) {
-        consumiveis.add(consumivel);
-    }
-
-    public boolean utilizarConsumivel(Consumivel consumivel) {
-        if (!consumiveis.contains(consumivel)) {
-            return false;
-        }
-        this.pontosVida += consumivel.getVida();
-        consumiveis.stream().filter(consumivel1 -> consumivel1.equals(consumivel.getNome())).toList().removeFirst();
-        return true;
+    public void setMana(int mana) {
+        this.mana = mana;
     }
 
     public void addItem(Item item) {
@@ -157,13 +172,14 @@ public class Personagem implements ItemInterface {
     }
 
     public boolean validarCritico() {
-        int rdn = new Random().nextInt(101);
+        int rdn = new Random().nextInt(100);
         return rdn <= chanceCritico;
     }
 
     @Override
     public boolean comprar(Item item) {
         if (item.getValor() <= moedas) {
+            addItem(item);
             moedas -= item.getValor();
             return true;
         } else {
@@ -171,11 +187,26 @@ public class Personagem implements ItemInterface {
         }
     }
 
+
+    public int getVidaMaxima() {
+        return vidaMaxima;
+    }
+
+    public void setVidaMaxima(int vidaMaxima) {
+        this.vidaMaxima = vidaMaxima;
+    }
+
+    public int getManaMaxima() {
+        return manaMaxima;
+    }
+
+    public void setManaMaxima(int manaMaxima) {
+        this.manaMaxima = manaMaxima;
+    }
+
     public boolean usarHabilidade(Habilidade habilidade, Personagem personagem) {
-        int critico = validarCritico() ? 2 : 1;
-        if (critico == 2) {
-            System.out.println("Crítico! A habilidade causa o dobro de dano!");
-        }
+        boolean foiCritico = validarCritico();
+        int critico = foiCritico ? 2 : 1;
 
         int danoFinal;
         if (habilidade.isDanoMagico()) {
@@ -184,12 +215,11 @@ public class Personagem implements ItemInterface {
             danoFinal = (habilidade.getDano() * critico) - personagem.getDefesa();
         }
 
-        // Garante que o dano não seja negativo (não cure o inimigo)
         if (danoFinal < 0) {
             danoFinal = 0;
         }
 
         personagem.setPontosVida(personagem.getPontosVida() - danoFinal);
-        return true;
+        return foiCritico;
     }
 }

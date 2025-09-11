@@ -10,7 +10,7 @@ import java.util.Random;
 public class Lutador extends Personagem implements FugaInterface, HabilidadeInterface {
 
     public Lutador(String nome) {
-        super(nome, 100, 10, 10, 20, 1, 0, 0);
+        super(nome, 100, 10, 10, 20, 1, 0, 0,0);
         super.addHabilidade(new Habilidade("Corte rapido", "Corta o inimigo rapidamente", 0, 12, false));
         super.addItem(new Item("Espada simples", 0, 9, 0, 0, 0, 5, 100));
     }
@@ -32,19 +32,5 @@ public class Lutador extends Personagem implements FugaInterface, HabilidadeInte
         }
     }
 
-    @Override
-    public boolean usarHabilidade(Habilidade habilidade, Personagem personagem) {
-
-        int critico = validarCritico() ? 2 : 1;
-        if (critico == 2) {
-            System.out.println("Critou! a Habilidade vai causar o dobro de dano!");
-        }
-        if (habilidade.isDanoMagico()) {
-            personagem.setPontosVida(personagem.getPontosVida() - ((habilidade.getDano() * critico) - personagem.getDefesaMagica()));
-        } else {
-            personagem.setPontosVida(personagem.getPontosVida() - ((habilidade.getDano() * critico) - personagem.getDefesa()));
-        }
-        return true;
-    }
 
 }

@@ -10,7 +10,7 @@ import java.util.Random;
 public class Arqueiro extends Personagem implements FugaInterface, HabilidadeInterface, ItemInterface {
 
     public Arqueiro(String nome) {
-        super(nome, 100, 10, 10, 20, 1, 0, 25);
+        super(nome, 100, 10, 10, 20, 1, 0, 25,10);
         super.addHabilidade(new Habilidade("Tiro rapido", "Uma tiro de arco rapido.", 0, 20, false));
         super.addItem(new Item("Arco longo", 0, 20, 0, 0, 1, 20, 100));
     }
@@ -32,20 +32,6 @@ public class Arqueiro extends Personagem implements FugaInterface, HabilidadeInt
         }
     }
 
-    @Override
-    public boolean usarHabilidade(Habilidade habilidade, Personagem personagem) {
-
-        int critico = validarCritico() ? 2 : 1;
-        if (critico == 2) {
-            System.out.println("Critou! a Habilidade vai causar o dobro de dano!");
-        }
-        if (habilidade.isDanoMagico()) {
-            personagem.setPontosVida(personagem.getPontosVida() - ((habilidade.getDano() * critico) - personagem.getDefesaMagica()));
-        } else {
-            personagem.setPontosVida(personagem.getPontosVida() - ((habilidade.getDano() * critico) - personagem.getDefesa()));
-        }
-        return true;
-    }
 
 
 }
