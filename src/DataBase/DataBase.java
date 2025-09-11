@@ -207,7 +207,7 @@ public class DataBase {
             new ArrayList<>()
     );
 
-    Inimigo inimigo1 = new Inimigo("Zumbi", 1000, 10, 10, 10, 10, 10, 10, new Habilidade("Tapa", "", 0, 15, false));
+    Inimigo inimigo1 = new Inimigo("Zumbi", 100, 10, 10, 10, 10, 10, 10, new Habilidade("Tapa", "", 0, 15, false));
 
 
     Capitulo cap2 = new Capitulo(

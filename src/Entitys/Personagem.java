@@ -19,6 +19,7 @@ public class Personagem implements ItemInterface {
     private int moedas;
     private int mana;
     private int manaMaxima;
+    // NOVOS ATRIBUTOS PARA CONTROLAR AS POÇÕES
     private int qntPocaoVida;
     private int qntPocaoMana;
 
@@ -41,10 +42,12 @@ public class Personagem implements ItemInterface {
         this.mana = mana;
         this.manaMaxima = mana;
         this.moedas = 25;
+        // VALORES INICIAIS PARA AS POÇÕES
         this.qntPocaoVida = 5;
         this.qntPocaoMana = 5;
     }
 
+    // --- GETTERS E SETTERS PARA AS POÇÕES ---
     public int getQntPocaoMana() {
         return qntPocaoMana;
     }
@@ -60,6 +63,7 @@ public class Personagem implements ItemInterface {
     public void setQntPocaoVida(int qntPocaoVida) {
         this.qntPocaoVida = qntPocaoVida;
     }
+    // --- FIM DOS GETTERS E SETTERS ---
 
     public int getMoedas() {
         return moedas;
@@ -186,7 +190,6 @@ public class Personagem implements ItemInterface {
             return false;
         }
     }
-
 
     public int getVidaMaxima() {
         return vidaMaxima;
