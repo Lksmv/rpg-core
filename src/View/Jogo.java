@@ -6,6 +6,7 @@ import Entitys.Historia.Capitulo;
 import Entitys.Historia.Frase;
 import Entitys.Mago;
 import Entitys.Personagem;
+import View.Component.AudioPlayer;
 import View.Component.RoundedBorder;
 
 import javax.swing.*;
@@ -154,6 +155,12 @@ public class Jogo {
     public JPanel getPainelJogo() { return painelJogo; }
 
     public void narrar(Personagem personagem) {
+
+        try {
+            new AudioPlayer().tocarAudio("/resources/ambientSound.wav", -10.0f);
+        } catch (Exception ex) {
+            System.err.println("Aviso: erro ao tocar som de fundo: " + ex.getMessage());
+        }
         narrarCapitulo(new DataBase().getHistoria().getInicio(), personagem);
     }
 
@@ -163,7 +170,9 @@ public class Jogo {
         this.capituloAtual = capitulo;
         criarPainelStatus();
         atualizarBarras();
+
         SwingUtilities.invokeLater(() -> painelJogo.requestFocusInWindow());
+
         SwingWorker<Void, Map.Entry<Integer, String>> narrador = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
