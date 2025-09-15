@@ -52,6 +52,7 @@ public class Jogo {
     private final JPanel painelBotoesAcao;
     private final JPanel painelHabilidades;
     private final JPanel painelAlvos;
+    private boolean esperandoInput = false;
 
     public Jogo(MainView mainView) {
         this.mainView = mainView;
@@ -90,26 +91,29 @@ public class Jogo {
     }
 
     private void addUniversalListeners() {
-        areaTexto.addMouseListener(new MouseAdapter() {
+        // --- ALTERADO ---
+        // Agora o clique/Enter só funciona se a trava 'esperandoInput' estiver ligada
+        MouseAdapter listener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (labelInstrucao.isVisible()) {
+                if (esperandoInput) {
                     semaphore.release();
                 }
             }
-        });
-        painelJogo.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER && labelInstrucao.isVisible()) {
-                    semaphore.release();
-                }
-            }
-        });
-        painelJogo.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 painelJogo.requestFocusInWindow();
+            }
+        };
+        areaTexto.addMouseListener(listener);
+        painelJogo.addMouseListener(listener);
+
+        painelJogo.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER && esperandoInput) {
+                    semaphore.release();
+                }
             }
         });
         painelJogo.setFocusable(true);
@@ -165,37 +169,30 @@ public class Jogo {
     }
 
     private void narrarCapitulo(Capitulo capitulo, Personagem personagem) {
-        labelInstrucao.setVisible(true);
         this.jogador = personagem;
         this.capituloAtual = capitulo;
         criarPainelStatus();
         atualizarBarras();
-
         SwingUtilities.invokeLater(() -> painelJogo.requestFocusInWindow());
 
-        SwingWorker<Void, Map.Entry<Integer, String>> narrador = new SwingWorker<>() {
+        SwingWorker<Void, String> narrador = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
-                List<Frase> frases = capitulo.getPeriodoInicial();
-                for (int i = 0; i < frases.size(); i++) {
-                    publish(new AbstractMap.SimpleEntry<>(i, frases.get(i).getConteudo()));
+                labelInstrucao.setVisible(true);
+                esperandoInput = true; // Liga a trava
+                for (Frase frase : capitulo.getPeriodoInicial()) {
+                    publish(frase.getConteudo());
                     semaphore.acquire();
                 }
                 return null;
             }
             @Override
-            protected void process(List<Map.Entry<Integer, String>> chunks) {
-                for (Map.Entry<Integer, String> entry : chunks) {
-                    int index = entry.getKey();
-                    String text = entry.getValue();
-                    if (index == 0 || (index > 0 && index % 4 == 0)) {
-                        areaTexto.setText("");
-                    }
-                    appendColoredText(text + "\n", Color.WHITE, true);
-                }
+            protected void process(List<String> chunks) {
+                for(String text : chunks) appendColoredText(text + "\n", Color.WHITE, false);
             }
             @Override
             protected void done() {
+                esperandoInput = false; // Desliga a trava
                 labelInstrucao.setVisible(false);
                 if (capitulo.getInimigos() != null && !capitulo.getInimigos().isEmpty()) {
                     executarCombate(personagem, new ArrayList<>(capitulo.getInimigos()));
@@ -208,31 +205,25 @@ public class Jogo {
     }
 
     private void continuarNarracao() {
-        labelInstrucao.setVisible(true);
-        SwingWorker<Void, Map.Entry<Integer, String>> narrador = new SwingWorker<>() {
+        SwingWorker<Void, String> narrador = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
                 Thread.sleep(1000);
-                List<Frase> frases = capituloAtual.getPeriodoFinal();
-                for (int i = 0; i < frases.size(); i++) {
-                    publish(new AbstractMap.SimpleEntry<>(i, frases.get(i).getConteudo()));
+                labelInstrucao.setVisible(true);
+                esperandoInput = true; // Liga a trava
+                for (Frase frase : capituloAtual.getPeriodoFinal()) {
+                    publish(frase.getConteudo());
                     semaphore.acquire();
                 }
                 return null;
             }
             @Override
-            protected void process(List<Map.Entry<Integer, String>> chunks) {
-                for (Map.Entry<Integer, String> entry : chunks) {
-                    int index = entry.getKey();
-                    String text = entry.getValue();
-                    if (index == 0 || (index > 0 && index % 4 == 0)) {
-                        areaTexto.setText("");
-                    }
-                    appendColoredText(text + "\n", Color.WHITE, true);
-                }
+            protected void process(List<String> chunks) {
+                for(String text : chunks) appendColoredText(text + "\n", Color.WHITE, false);
             }
             @Override
             protected void done() {
+                esperandoInput = false; // Desliga a trava
                 labelInstrucao.setVisible(false);
                 mostrarEscolhas(capituloAtual.getProximosCapitulos(), jogador);
             }
@@ -300,7 +291,9 @@ public class Jogo {
 
     private void turnoDoJogador() {
         habilidadeSelecionada = null;
+        areaTexto.setText(""); // Limpa a tela para o novo turno
         appendColoredText("=== Seu turno ===\n", new Color(100, 150, 255), false);
+        // ... (resto do método igual)
         appendColoredText("Sua vida: " + Math.max(0, jogador.getPontosVida()) + "/" + jogador.getVidaMaxima() + "\n", Color.WHITE, true);
         if (jogador instanceof Mago) {
             appendColoredText("Sua mana: " + ((Mago) jogador).getMana() + "/" + ((Mago) jogador).getManaMaxima() + "\n\n", Color.CYAN, true);
@@ -377,48 +370,65 @@ public class Jogo {
             inimigos.remove(alvo);
         }
         habilidadeSelecionada = null;
-        if (!verificarFimDeCombate()) {
-            Timer timer = new Timer(2000, e -> turnoDosInimigos());
-            timer.setRepeats(false);
-            timer.start();
-        }
+
+        // Inicia a sequência de turnos dos inimigos, que agora é manual
+        iniciarSequenciaDeTurnosInimigos();
     }
 
-    private void turnoDosInimigos() {
-        esconderPaineisCombate();
+    private void iniciarSequenciaDeTurnosInimigos() {
         if (verificarFimDeCombate()) return;
-        appendColoredText("\n=== Turno dos Inimigos ===\n", new Color(255, 80, 80), true);
 
-        final int delayEntreAtaques = 1500;
-        int i = 0;
-        for (Personagem inimigo : new ArrayList<>(inimigos)) {
-            if (inimigo.getPontosVida() > 0) {
-                Timer timer = new Timer(delayEntreAtaques * i, e -> {
-                    if (jogador.getPontosVida() > 0) {
+        SwingWorker<Void, Runnable> workerTurnos = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                publish(() -> appendColoredText("\n=== Turno dos Inimigos ===\n", new Color(255, 80, 80), true));
+
+                esperandoInput = true;
+                labelInstrucao.setVisible(true);
+                semaphore.acquire();
+
+                for (Personagem inimigo : new ArrayList<>(inimigos)) {
+                    if (inimigo.getPontosVida() > 0 && jogador.getPontosVida() > 0) {
+                        // Lógica de ataque do inimigo
                         Habilidade habilidadeInimiga = inimigo.getHabilidades().getFirst();
                         boolean foiCritico = inimigo.usarHabilidade(habilidadeInimiga, jogador);
-                        appendColoredText("> " + inimigo.getNome() + " usou " + habilidadeInimiga.getNome() + " em você!\n", new Color(255, 100, 100), true);
-                        if (foiCritico) {
-                            appendColoredText("!!! O INIMIGO ACERTOU UM GOLPE CRÍTICO !!!\n", Color.RED, true);
-                        }
-                        appendColoredText("  Sua vida: " + Math.max(0, jogador.getPontosVida()) + "\n", Color.LIGHT_GRAY, true);
-                        atualizarBarras();
-                        verificarFimDeCombate();
-                    }
-                });
-                timer.setRepeats(false);
-                timer.start();
-                i++;
-            }
-        }
 
-        Timer proximoTurnoTimer = new Timer(delayEntreAtaques * i + 500, e -> {
-            if (!verificarFimDeCombate()) {
-                turnoDoJogador();
+                        // Envia as atualizações para a UI
+                        publish(() -> {
+                            appendColoredText("> " + inimigo.getNome() + " usou " + habilidadeInimiga.getNome() + " em você!\n", new Color(255, 100, 100), true);
+                            if (foiCritico) {
+                                appendColoredText("!!! O INIMIGO ACERTOU UM GOLPE CRÍTICO !!!\n", Color.RED, true);
+                            }
+                            appendColoredText("  Sua vida: " + Math.max(0, jogador.getPontosVida()) + "\n", Color.LIGHT_GRAY, true);
+                            atualizarBarras();
+                        });
+
+                        // Pausa para o próximo comando
+                        semaphore.acquire();
+                        if(verificarFimDeCombate()) break; // Para o loop se o combate acabou
+                    }
+                }
+                return null;
             }
-        });
-        proximoTurnoTimer.setRepeats(false);
-        proximoTurnoTimer.start();
+
+            @Override
+            protected void process(List<Runnable> chunks) {
+                // Executa as atualizações de UI enviadas pelo doInBackground
+                for (Runnable task : chunks) {
+                    task.run();
+                }
+            }
+
+            @Override
+            protected void done() {
+                esperandoInput = false; // Desliga a trava
+                labelInstrucao.setVisible(false);
+                if (!verificarFimDeCombate()) {
+                    turnoDoJogador(); // Volta para o turno do jogador
+                }
+            }
+        };
+        workerTurnos.execute();
     }
 
     private boolean verificarFimDeCombate() {
@@ -441,6 +451,7 @@ public class Jogo {
     }
 
     private void usarItem() {
+        // ... (Este método permanece o mesmo)
         String pocaoVida = "Poção de Cura (+30 HP) x" + jogador.getQntPocaoVida();
         String pocaoMana = "Elixir Mágico (+20 MP) x" + jogador.getQntPocaoMana();
         String[] inventario = {pocaoVida, pocaoMana};
@@ -478,9 +489,9 @@ public class Jogo {
         if (jogador instanceof Mago) {
             appendColoredText("Sua mana: " + ((Mago) jogador).getMana() + "\n", Color.WHITE, true);
         }
-        Timer timer = new Timer(2000, e -> turnoDosInimigos());
-        timer.setRepeats(false);
-        timer.start();
+
+        // Inicia a sequência de turnos dos inimigos, que agora é manual
+        iniciarSequenciaDeTurnosInimigos();
     }
 
     private void fugirDaBatalha() {
