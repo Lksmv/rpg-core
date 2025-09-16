@@ -40,8 +40,7 @@ public class ViewCriacaoPersonagem {
         gbc.gridy = 1;
         painelNomePersonagem.add(campoNome, gbc);
 
-        JButton botaoConfirmar = new JButton("Confirmar");
-        mainView.configurarBotao(botaoConfirmar);
+        JButton botaoConfirmar = mainView.criarBotao("Confirmar",Color.blue, new Color(90, 60, 30));
         gbc.gridy = 2;
         painelNomePersonagem.add(botaoConfirmar, gbc);
 
@@ -67,21 +66,18 @@ public class ViewCriacaoPersonagem {
         gbc.insets = new Insets(10, 0, 10, 0);
 
         gbc.gridy = 0;
-        JButton botaoMago = new JButton("Mago");
-        mainView.configurarBotao(botaoMago);
-        botaoMago.setForeground(Color.BLUE);
+        JButton botaoMago = mainView.criarBotao("Mago",Color.blue, new Color(90, 60, 30));
+        botaoMago.setPreferredSize(new Dimension(200,40));
         painel.add(botaoMago, gbc);
 
         gbc.gridy = 1;
-        JButton botaoLutador = new JButton("Lutador");
-        mainView.configurarBotao(botaoLutador);
-        botaoLutador.setForeground(Color.RED);
+        JButton botaoLutador = mainView.criarBotao("Lutador",Color.RED, new Color(90, 60, 30));
+        botaoLutador.setPreferredSize(new Dimension(200,40));
         painel.add(botaoLutador, gbc);
 
         gbc.gridy = 2;
-        JButton botaoArqueiro = new JButton("Arqueiro");
-        mainView.configurarBotao(botaoArqueiro);
-        botaoArqueiro.setForeground(Color.GREEN);
+        JButton botaoArqueiro = mainView.criarBotao("Arqueiro",Color.GREEN, new Color(90, 60, 30));
+        botaoArqueiro.setPreferredSize(new Dimension(200,40));
         painel.add(botaoArqueiro, gbc);
 
         botaoMago.addActionListener(e -> criarPersonagemFinal("Mago"));

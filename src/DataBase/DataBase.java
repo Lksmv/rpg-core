@@ -88,11 +88,19 @@ public class DataBase {
         // --- A PARTE QUE VOCÊ PEDIU PARA MUDAR ---
         List<Item> lootDoZumbi = new ArrayList<>();
         lootDoZumbi.add(espada0);
+        List<Item> lootDoEsqueleto = new ArrayList<>();
+        lootDoEsqueleto.add(espada1);
 
         inimigo1 = new Inimigo(
                 "Zumbi", 100, 10, 10, 10, 10, 10, 10,
                 new Habilidade("Tapa", "", 0, 15, false),
                 lootDoZumbi
+        );
+
+        Inimigo inimigo2 = new Inimigo(
+                "Esqueleto", 100, 10, 10, 10, 10, 10, 10,
+                new Habilidade("Tapa", "", 0, 15, false),
+                lootDoEsqueleto
         );
         // --- FIM DA MUDANÇA ---
 
@@ -117,7 +125,7 @@ public class DataBase {
         cap6 = new Capitulo("A Biblioteca Esquecida", Arrays.asList(cap7, cap8), Arrays.asList(new Frase(GREEN + "Livros empoeirados falam de heróis antigos.")), Arrays.asList(new Frase(GREEN + "Você encontra um mapa rasgado.")), new ArrayList<>());
         cap5 = new Capitulo("O Castelo em Ruínas", Arrays.asList(cap6, cap7), Arrays.asList(new Frase(YELLOW + "Um castelo destruído pelo tempo se ergue diante de você.")), Arrays.asList(new Frase(YELLOW + "Sombras vagueiam pelos corredores.")), new ArrayList<>());
         cap4 = new Capitulo("A Taberna do Corvo", Arrays.asList(cap5, cap6), Arrays.asList(new Frase(PURPLE + "Na taberna, viajantes contam lendas antigas.")), Arrays.asList(new Frase(PURPLE + "Você ouve sobre a 'Coroa Perdida'." + "")), new ArrayList<>());
-        cap3 = new Capitulo("O Bosque Inicial", Arrays.asList(cap4, cap5), Arrays.asList(new Frase(CYAN + "Você caminha por um bosque iluminado pelo sol.")), Arrays.asList(new Frase(CYAN + "Pássaros cantam, mas o ar parece pesado.")), new ArrayList<>());
+        cap3 = new Capitulo("O Bosque Inicial", Arrays.asList(cap4, cap5), Arrays.asList(new Frase(CYAN + "Você caminha por um bosque iluminado pelo sol.")), Arrays.asList(new Frase(CYAN + "Pássaros cantam, mas o ar parece pesado.")), Arrays.asList(inimigo2));
 
         cap2 = new Capitulo("A Estrada Antiga", Arrays.asList(cap3, cap4), Arrays.asList(new Frase(SILVER + "Você segue por uma estrada esquecida.")), Arrays.asList(new Frase(SILVER + "Pegadas estranhas marcam a terra.")), Arrays.asList(inimigo1));
 

@@ -1,11 +1,9 @@
 package View;
 
 import DataBase.DataBase;
-import Entitys.Habilidade;
+import Entitys.*;
 import Entitys.Historia.Capitulo;
 import Entitys.Historia.Frase;
-import Entitys.Mago;
-import Entitys.Personagem;
 import View.Component.AudioPlayer;
 import View.Component.RoundedBorder;
 
@@ -44,6 +42,7 @@ public class Jogo {
     private Capitulo capituloAtual;
     private final Semaphore semaphore = new Semaphore(0);
     private List<Personagem> inimigos;
+    private List<Personagem> inimigosOriginaisDoCombate;
     private Habilidade habilidadeSelecionada;
 
     // Atributos de Controle dos Painéis de Combate
@@ -59,13 +58,15 @@ public class Jogo {
         painelJogo = new JPanel(new BorderLayout());
         painelJogo.setBackground(Color.BLACK);
         painelJogo.setBorder(new EmptyBorder(20, 20, 20, 20));
+
         areaTexto = new JTextPane();
         areaTexto.setEditable(false);
-        areaTexto.setFont(new Font("Georgia", Font.PLAIN, 20));
+        areaTexto.setFont(mainView.getFont());
         areaTexto.setBackground(new Color(18, 18, 18));
         areaTexto.setForeground(Color.WHITE);
         areaTexto.setMargin(new Insets(15, 20, 15, 20));
         areaTexto.setBorder(new RoundedBorder(15));
+
         JScrollPane scroll = new JScrollPane(areaTexto);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         painelJogo.add(scroll, BorderLayout.CENTER);
@@ -83,7 +84,7 @@ public class Jogo {
         labelInstrucao = new JLabel("(Pressione Enter ou clique para continuar...)");
         labelInstrucao.setForeground(Color.LIGHT_GRAY);
         labelInstrucao.setHorizontalAlignment(SwingConstants.CENTER);
-        labelInstrucao.setFont(new Font("Consolas", Font.ITALIC, 14));
+        labelInstrucao.setFont(mainView.getFont());
         labelInstrucao.setBorder(new EmptyBorder(20, 0, 10, 0));
         labelInstrucao.setVisible(false);
         painelRodape.add(labelInstrucao, BorderLayout.SOUTH);
@@ -122,32 +123,28 @@ public class Jogo {
     private void mostrarPaineisCombate() { painelContainerBotoes.setVisible(true); }
     private void esconderPaineisCombate() { painelContainerBotoes.setVisible(false); }
 
-    private JButton criarBotaoEstilizado(String texto, Color corFundo, Color corHover) {
-        JButton botao = new JButton(texto);
-        botao.setBackground(corFundo);
-        botao.setForeground(Color.WHITE);
-        botao.setFocusPainted(false);
-        botao.setFont(new Font("Consolas", Font.BOLD, 14));
-        botao.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(120, 120, 120), 2, true), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
-        botao.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        botao.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) { botao.setBackground(corHover); }
-            public void mouseExited(java.awt.event.MouseEvent evt) { botao.setBackground(corFundo); }
-        });
-        return botao;
-    }
 
     private void criarPaineisDeCombate() {
         painelBotoesAcao.setBackground(new Color(15, 15, 15));
-        JButton botaoHabilidade = criarBotaoEstilizado("Usar Habilidade", new Color(70, 40, 40), new Color(120, 60, 60));
-        JButton botaoItem = criarBotaoEstilizado("Usar Item", new Color(40, 70, 40), new Color(60, 120, 60));
-        JButton botaoFugir = criarBotaoEstilizado("Fugir", new Color(40, 40, 70), new Color(60, 60, 120));
+        JButton botaoHabilidade = mainView.criarBotao("Usar Habilidade", new Color(70, 40, 40), new Color(120, 60, 60));
+        JButton botaoItem = mainView.criarBotao("Usar Item", new Color(40, 70, 40), new Color(60, 120, 60));
+        JButton botaoFugir = mainView.criarBotao("Fugir", new Color(40, 40, 70), new Color(60, 60, 120));
+
+        JButton botaoInventario = mainView.criarBotao("Inventário", new Color(60, 60, 60), new Color(90, 90, 90));
+        botaoInventario.addActionListener(e -> abrirInventario());
+
+        botaoHabilidade.setFont(mainView.getFont().deriveFont(12f));
+        botaoHabilidade.setPreferredSize(new Dimension(325,40));
+        botaoItem.setFont(mainView.getFont().deriveFont(12f));
+        botaoFugir.setFont(mainView.getFont().deriveFont(12f));
+
         botaoHabilidade.addActionListener(e -> iniciarSelecaoDeHabilidade());
         botaoItem.addActionListener(e -> usarItem());
         botaoFugir.addActionListener(e -> fugirDaBatalha());
         painelBotoesAcao.add(botaoHabilidade);
         painelBotoesAcao.add(botaoItem);
         painelBotoesAcao.add(botaoFugir);
+        painelBotoesAcao.add(botaoInventario);
         painelHabilidades.setBackground(new Color(15, 15, 15));
         painelAlvos.setBackground(new Color(15, 15, 15));
         painelContainerBotoes.add(painelBotoesAcao, "ACOES");
@@ -157,6 +154,13 @@ public class Jogo {
     }
 
     public JPanel getPainelJogo() { return painelJogo; }
+
+    private void abrirInventario() {
+        // Cria uma nova instância da nossa tela de inventário
+        InventarioDialog telaInventario = new InventarioDialog(mainView, jogador);
+        // Torna a tela visível
+        telaInventario.setVisible(true);
+    }
 
     public void narrar(Personagem personagem) {
 
@@ -258,8 +262,9 @@ public class Jogo {
         painelEscolhas.setBackground(Color.BLACK);
         painelEscolhas.setBorder(new EmptyBorder(10, 10, 10, 10));
         for (Capitulo cap : proximos) {
-            JButton btn = new JButton(cap.getTitulo());
-            mainView.configurarBotao(btn);
+            JButton btn = mainView.criarBotao(cap.getTitulo(),new Color(185,73,71,255), new Color(90, 60, 30));
+            btn.setPreferredSize(new Dimension(300,40));
+
             btn.addActionListener(e -> {
                 painelJogo.remove(painelEscolhas);
                 painelJogo.revalidate();
@@ -276,6 +281,7 @@ public class Jogo {
     private void executarCombate(Personagem personagem, List<Personagem> inimigos) {
         this.jogador = personagem;
         this.inimigos = new ArrayList<>(inimigos);
+        this.inimigosOriginaisDoCombate = new ArrayList<>(inimigos);
         Map<String, Integer> contadorNomes = new HashMap<>();
         for (Personagem inimigo : this.inimigos) {
             String nomeBase = inimigo.getNome();
@@ -319,11 +325,12 @@ public class Jogo {
         }
         painelHabilidades.removeAll();
         for (Habilidade hab : habilidades) {
-            JButton btnHab = criarBotaoEstilizado(hab.getNome(), new Color(70, 40, 40), new Color(120, 60, 60));
+            JButton btnHab = mainView.criarBotao(hab.getNome(), new Color(70, 40, 40), new Color(120, 60, 60));
+            btnHab.setPreferredSize(new Dimension(300,40));
             btnHab.addActionListener(e -> iniciarSelecaoDeAlvo(hab));
             painelHabilidades.add(btnHab);
         }
-        JButton btnVoltar = criarBotaoEstilizado("Voltar", new Color(80, 80, 80), new Color(110, 110, 110));
+        JButton btnVoltar = mainView.criarBotao("Voltar", new Color(80, 80, 80), new Color(110, 110, 110));
         btnVoltar.addActionListener(e -> turnoDoJogador());
         painelHabilidades.add(btnVoltar);
         appendColoredText("\nEscolha uma habilidade...\n", Color.CYAN, true);
@@ -341,12 +348,12 @@ public class Jogo {
         painelAlvos.removeAll();
         for (Personagem inimigo : inimigos) {
             if (inimigo.getPontosVida() > 0) {
-                JButton btnAlvo = criarBotaoEstilizado(inimigo.getNome(), new Color(90, 20, 20), new Color(140, 40, 40));
+                JButton btnAlvo = mainView.criarBotao(inimigo.getNome(), new Color(90, 20, 20), new Color(140, 40, 40));
                 btnAlvo.addActionListener(e -> executarAcaoDoJogador(inimigo));
                 painelAlvos.add(btnAlvo);
             }
         }
-        JButton btnVoltar = criarBotaoEstilizado("Voltar", new Color(80, 80, 80), new Color(110, 110, 110));
+        JButton btnVoltar = mainView.criarBotao("Voltar", new Color(80, 80, 80), new Color(110, 110, 110));
         btnVoltar.addActionListener(e -> iniciarSelecaoDeHabilidade());
         painelAlvos.add(btnVoltar);
         appendColoredText("\nEscolha um alvo...\n", Color.CYAN, true);
@@ -439,14 +446,35 @@ public class Jogo {
             timer.start();
             return true;
         }
+
         if (inimigos.stream().allMatch(i -> i.getPontosVida() <= 0)) {
             appendColoredText("\n--- VITÓRIA! ---\n", Color.GREEN, true);
             esconderPaineisCombate();
+
+            appendColoredText("\nVocê coleta os despojos da batalha...\n", Color.YELLOW, false);
+
+            for (Personagem personagemDerrotado : inimigosOriginaisDoCombate) {
+                if (personagemDerrotado instanceof Inimigo) {
+                    Inimigo inimigo = (Inimigo) personagemDerrotado;
+                    List<Item> loot = inimigo.getLoot();
+
+                    if (loot != null && !loot.isEmpty()) {
+                        for (Item item : loot) {
+                            jogador.addItem(item);
+
+                            // Mensagem para o jogador saber o que ganhou
+                            appendColoredText(">> Você obteve: [" + item.getNome() + "]!\n", Color.MAGENTA, true);
+                        }
+                    }
+                }
+            }
+
             Timer timer = new Timer(1500, e -> continuarNarracao());
             timer.setRepeats(false);
             timer.start();
             return true;
         }
+
         return false;
     }
 

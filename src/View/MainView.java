@@ -1,7 +1,13 @@
 package View;
 
+import View.Component.RoundedBorder;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,25 +17,49 @@ public class MainView extends JFrame {
     private final Map<String, JPanel> paineis = new HashMap<>();
     private Menu menu = new Menu(this);
     private ViewCriacaoPersonagem selecao = new ViewCriacaoPersonagem(this);
-    private Jogo jogo; // ALTERADO: Não inicializa mais aqui
+    private Jogo jogo;
+    private static final Font FONTE_PADRAO = carregarFontePersonalizada();
+
+    private static Font carregarFontePersonalizada() {
+        try {
+            InputStream is = MainView.class.getResourceAsStream("/resources/PressStart2P-Regular.ttf");
+            if (is == null) {
+                throw new IOException("Arquivo de fonte não encontrado");
+            }
+            return Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(16f);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Font("Consolas", Font.BOLD, 16); // fallback
+        }
+    }
+
+    public static Font getFonteGlobal() {
+        return FONTE_PADRAO;
+    } // Fonte global
 
     public MainView() {
         criarJframe();
-        iniciarNovoJogo(); // NOVO: Inicia a primeira instância do jogo
+        iniciarNovoJogo();
     }
 
     private void criarJframe() {
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
+
+        ImageIcon logoOriginal = new ImageIcon(getClass().getResource("/resources/logo-wo-name.png"));
+        Image imagemRedimensionada = logoOriginal.getImage().getScaledInstance(300, 300, Image.SCALE_SMOOTH);
+
+        ImageIcon logoRedimensionada = new ImageIcon(imagemRedimensionada);
+
         add(cardPanel);
-        setTitle("Rpg game");
+        setTitle("KING's Fall");
+        setIconImage(imagemRedimensionada);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
+        setSize(1280, 720);
         setResizable(false);
         setLocationRelativeTo(null);
-        setFont(new Font("Consolas", Font.BOLD, 11));
+        setFont(FONTE_PADRAO);
 
-        // Panéis que não mudam
         JPanel painelMenu = menu.criarPainelMenu();
         JPanel painelClassePersonagem = selecao.painelEscolherClasse();
         JPanel painelNomePersonagem = selecao.criarPainelNomePersonagem();
@@ -41,33 +71,18 @@ public class MainView extends JFrame {
         setVisible(true);
     }
 
-    // NOVO: Método para criar e configurar uma nova instância do jogo
     public void iniciarNovoJogo() {
-        // Remove o painel antigo se ele existir
         if (jogo != null) {
             cardPanel.remove(jogo.getPainelJogo());
         }
-        // Cria um novo jogo e adiciona ao painel
         jogo = new Jogo(this);
         addPanel("jogo", jogo.getPainelJogo());
     }
 
 
-    public void configurarBotao(JButton botao) {
-        botao.setPreferredSize(new Dimension(170, 40));
-        botao.setFocusPainted(false);
-        botao.setFont(new Font("Consolas", Font.BOLD, 14));
-        botao.setBackground(new Color(50, 50, 50));
-        botao.setForeground(Color.WHITE);
-        botao.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        botao.setBorder(new View.Component.RoundedBorder(20));
-        botao.setContentAreaFilled(false);
-    }
-
     public void mostrarPainel(String nomePainel) {
         cardLayout.show(cardPanel, nomePainel);
     }
-
 
     private void addPanel(String nome, JPanel painel) {
         paineis.put(nome, painel);
@@ -81,4 +96,46 @@ public class MainView extends JFrame {
     public ViewCriacaoPersonagem getSelecao() {
         return selecao;
     }
+
+    public JButton criarBotao(String texto, Color corNormal, Color corHover) {
+        JButton botao = new JButton(texto);
+        botao.setFocusPainted(false);
+
+        // Define fonte e cor
+        Font fonte = FONTE_PADRAO.deriveFont(18f); // Ajuste aqui se quiser outro tamanho
+        botao.setFont(fonte);
+        botao.setBackground(corNormal);
+        botao.setForeground(Color.WHITE);
+        botao.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Apenas padding interno + borda
+        Color corBorda = new Color(180, 40, 40);
+        botao.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(corBorda, 2),
+                BorderFactory.createEmptyBorder(10, 20, 10, 20) // padding: top, left, bottom, right
+        ));
+
+        // Visual
+        botao.setContentAreaFilled(true);
+        botao.setOpaque(true);
+        botao.setBorderPainted(true);
+
+        // Efeito hover
+        botao.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                botao.setBackground(corHover);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                botao.setBackground(corNormal);
+            }
+        });
+
+        return botao;
+    }
+
+
+
 }
