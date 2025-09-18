@@ -14,6 +14,10 @@ public class Capitulo {
     private List<Frase> periodoFinal;
     private List<Personagem> inimigos;
 
+    public Capitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
     public Capitulo(String titulo, List<Capitulo> proximosCapitulos, List<Frase> periodoInicial, List<Frase> periodoFinal, List<Personagem> inimigos) {
         this.titulo = titulo;
         this.proximosCapitulos = proximosCapitulos;
@@ -58,10 +62,9 @@ public class Capitulo {
         return proximosCapitulos;
     }
 
-    public void setProximosCapitulos(List<Capitulo> proximosCapitulos) {
-        this.proximosCapitulos = proximosCapitulos;
+    public void addProximoCapitulo(Capitulo proximoCapitulo) {
+        this.proximosCapitulos.add((proximoCapitulo));
     }
-
 
 
 }

@@ -182,8 +182,9 @@ public class Jogo {
         SwingWorker<Void, String> narrador = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
+                limparTela(); // <<< LIMPA ANTES DE COMEÇAR O CAPITULO
                 labelInstrucao.setVisible(true);
-                esperandoInput = true; // Liga a trava
+                esperandoInput = true;
                 for (Frase frase : capitulo.getPeriodoInicial()) {
                     publish(frase.getConteudo());
                     semaphore.acquire();
@@ -192,11 +193,13 @@ public class Jogo {
             }
             @Override
             protected void process(List<String> chunks) {
-                for(String text : chunks) appendColoredText(text + "\n", Color.WHITE, false);
+                for(String text : chunks) {
+                    appendColoredText(text + "\n", Color.WHITE, true); // <<< aqui usa append = true
+                }
             }
             @Override
             protected void done() {
-                esperandoInput = false; // Desliga a trava
+                esperandoInput = false;
                 labelInstrucao.setVisible(false);
                 if (capitulo.getInimigos() != null && !capitulo.getInimigos().isEmpty()) {
                     executarCombate(personagem, new ArrayList<>(capitulo.getInimigos()));
@@ -212,9 +215,10 @@ public class Jogo {
         SwingWorker<Void, String> narrador = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
+                limparTela(); // <<< LIMPA ANTES DO FINAL DO CAPITULO
                 Thread.sleep(1000);
                 labelInstrucao.setVisible(true);
-                esperandoInput = true; // Liga a trava
+                esperandoInput = true;
                 for (Frase frase : capituloAtual.getPeriodoFinal()) {
                     publish(frase.getConteudo());
                     semaphore.acquire();
@@ -223,17 +227,25 @@ public class Jogo {
             }
             @Override
             protected void process(List<String> chunks) {
-                for(String text : chunks) appendColoredText(text + "\n", Color.WHITE, false);
+                for(String text : chunks) {
+                    appendColoredText(text + "\n", Color.WHITE, true);
+                }
             }
             @Override
             protected void done() {
-                esperandoInput = false; // Desliga a trava
+                esperandoInput = false;
                 labelInstrucao.setVisible(false);
                 mostrarEscolhas(capituloAtual.getProximosCapitulos(), jogador);
             }
         };
         narrador.execute();
     }
+
+
+    private void limparTela() {
+        areaTexto.setText("");
+    }
+
 
     private void fimDeJogo(String mensagem) {
         esconderPaineisCombate();
