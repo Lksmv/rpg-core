@@ -102,7 +102,7 @@ public class MainView extends JFrame {
         botao.setFocusPainted(false);
 
         // Define fonte e cor
-        Font fonte = FONTE_PADRAO.deriveFont(18f); // Ajuste aqui se quiser outro tamanho
+        Font fonte = FONTE_PADRAO.deriveFont(16f); // Ajuste aqui se quiser outro tamanho
         botao.setFont(fonte);
         botao.setBackground(corNormal);
         botao.setForeground(Color.WHITE);
