@@ -2,6 +2,7 @@ package Entitys.Historia;
 
 import Entitys.Personagem;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -16,6 +17,10 @@ public class Capitulo {
 
     public Capitulo(String titulo) {
         this.titulo = titulo;
+        this.proximosCapitulos = new ArrayList<>();
+        this.periodoInicial = new ArrayList<>();
+        this.periodoFinal = new ArrayList<>();
+        this.inimigos = new ArrayList<>();
     }
 
     public Capitulo(String titulo, List<Capitulo> proximosCapitulos, List<Frase> periodoInicial, List<Frase> periodoFinal, List<Personagem> inimigos) {

@@ -10,7 +10,7 @@ import java.util.Random;
 public class Arqueiro extends Personagem implements FugaInterface, HabilidadeInterface, ItemInterface {
 
     public Arqueiro(String nome) {
-        super(nome, 100, 10, 10, 20, 1, 0, 25,10);
+        super(nome, 200, 10, 10, 20, 1, 0, 25,10);
         super.addHabilidade(new Habilidade("Tiro rapido", "Uma tiro de arco rapido.", 0, 20, false));
         super.addItem(new Item("Arco longo", 0, 20, 0, 0, 1, 20, 100));
     }

@@ -11,7 +11,7 @@ public class Mago extends Personagem implements FugaInterface, HabilidadeInterfa
 
 
     public Mago(String nome) {
-        super(nome, 100, 10, 10, 20, 1, 0, 0, 10);
+        super(nome, 200, 10, 10, 20, 1, 0, 0, 100);
         super.addHabilidade(new Habilidade("Bola de fogo", "É uma bola de fogo.", 6, 25, true));
         super.addItem(new Item("Cajado de fogo", 0, 20, 0, 1, 0, 0, 100));
     }
