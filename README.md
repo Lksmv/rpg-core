@@ -93,8 +93,8 @@ java -cp out Main.Main
 - Interface gráfica funcional com áudio, fontes personalizadas e imagens.
 - Estrutura que permite a expansão com novos personagens, capítulos e recursos.
 
-👨‍💻 Autores
-Davi Augusto
-Lucas Miguel Vieira
-Ana Clara Coutinho
-Gabriela 
+## 👨‍💻 Autores
+- Davi Augusto
+- Lucas Miguel Vieira
+- Ana Clara Coutinho
+- Gabriela 
